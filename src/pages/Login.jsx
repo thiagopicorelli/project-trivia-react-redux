@@ -34,6 +34,11 @@ class Login extends Component {
     history.push('/game');
   };
 
+  handleClickSettings = () => {
+    const { history } = this.props;
+    history.push('/config');
+  };
+
   render() {
     const { nameInput, emailInput, isDisabled } = this.state;
 
@@ -73,6 +78,13 @@ class Login extends Component {
             onClick={ () => this.handleClickPlay() }
           >
             Play
+          </button>
+          <button
+            type="button"
+            data-testid="btn-settings"
+            onClick={ () => this.handleClickSettings() }
+          >
+            Settings
           </button>
         </div>
       </header>
