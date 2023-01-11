@@ -1,7 +1,7 @@
 import React from 'react';
 import logo from './trivia.png';
 import './App.css';
-import LoginPage from './pages/LoginPage';
+import LoginPage from './pages/Login';
 
 export default function App() {
   return (
