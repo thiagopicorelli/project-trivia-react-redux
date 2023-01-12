@@ -27,12 +27,11 @@ class Game extends Component {
       const answers = [
         ...questionComponent.incorrect_answers,
         questionComponent.correct_answer];
-      
-      const answersObject = answers.map((answer, index) => (
-        {text: answer, index}
-      ));
 
-      questionComponent.answers = answersObject.sort(() => Math.random() - shuffleNumber);  
+      const answersObject = answers.map((answer, index) => (
+        { text: answer, index }
+      ));
+      questionComponent.answers = answersObject.sort(() => Math.random() - shuffleNumber);
     });
 
     this.setState({
