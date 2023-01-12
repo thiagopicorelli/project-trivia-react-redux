@@ -9,6 +9,7 @@ class Game extends Component {
     requestQuestions: [],
     currentQuestion: 0,
     loading: true,
+    timedOut: false,
   };
 
   async componentDidMount() {
@@ -22,12 +23,20 @@ class Game extends Component {
     this.setState({
       requestQuestions: fetchedQuestions.results,
       loading: false,
-    });
+    }, this.setTimer);
+  }
+
+  async setTimer() {
+    const questionTimer = 30000;
+    setTimeout(() => this.setState({
+      timedOut: true,
+      // Colocar aqui a resposta como a errada
+    }), questionTimer);
   }
 
   render() {
     const { email, name, score } = this.props;
-    const { requestQuestions, currentQuestion, loading } = this.state;
+    const { requestQuestions, currentQuestion, loading, timedOut } = this.state;
     const questionComponent = requestQuestions[currentQuestion];
     const hash = MD5(email).toString();
     const shuffleNumber = 0.5;
@@ -70,6 +79,7 @@ class Game extends Component {
                         type="button"
                         data-testid={ answersArray.length - 1 === index
                           ? 'correct-answer' : `wrong-answer-${index}` }
+                        disabled={ timedOut }
                       >
                         {answers}
                       </button>
