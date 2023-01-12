@@ -9,33 +9,54 @@ class Game extends Component {
     requestQuestions: [],
     currentQuestion: 0,
     loading: true,
+    timedOut: false,
+    timer: 30,
   };
 
   async componentDidMount() {
     const { history } = this.props;
+    const shuffleNumber = 0.5;
     const fetchedQuestions = await fetchQuestions();
     const errorCode = 3;
     if (fetchedQuestions.response_code === errorCode) {
       localStorage.removeItem('token');
       history.push('/');
     }
+
+    fetchedQuestions.results.forEach((questionComponent) => {
+      const answers = [
+        ...questionComponent.incorrect_answers,
+        questionComponent.correct_answer];
+
+      const answersObject = answers.map((answer, index) => (
+        { text: answer, index }
+      ));
+      questionComponent.answers = answersObject.sort(() => Math.random() - shuffleNumber);
+    });
+
     this.setState({
       requestQuestions: fetchedQuestions.results,
       loading: false,
-    });
+    }, this.setTimer);
+  }
+
+  async setTimer() {
+    const s = 1000;
+    const questionTimer = 30000;
+    setInterval(() => {
+      const { timer } = this.state;
+      this.setState({ timer: timer - 1 });
+    }, s);
+    setTimeout(() => {
+      this.setState({ timedOut: true });
+    }, questionTimer);
   }
 
   render() {
     const { email, name, score } = this.props;
-    const { requestQuestions, currentQuestion, loading } = this.state;
+    const { requestQuestions, currentQuestion, loading, timedOut } = this.state;
     const questionComponent = requestQuestions[currentQuestion];
     const hash = MD5(email).toString();
-    const shuffleNumber = 0.5;
-    let answersArray = [];
-    if (!loading) {
-      answersArray = [...questionComponent.incorrect_answers,
-        questionComponent.correct_answer];
-    }
 
     return (
       <div>
@@ -63,17 +84,17 @@ class Game extends Component {
               </p>
               <div data-testid="answer-options">
                 {
-                  answersArray
-                    .map((answers, index) => (
-                      <button
-                        key={ index }
-                        type="button"
-                        data-testid={ answersArray.length - 1 === index
-                          ? 'correct-answer' : `wrong-answer-${index}` }
-                      >
-                        {answers}
-                      </button>
-                    )).sort(() => Math.random() - shuffleNumber)
+                  questionComponent.answers.map((answers, index) => (
+                    <button
+                      key={ index }
+                      type="button"
+                      data-testid={ questionComponent.answers.length - 1 === answers.index
+                        ? 'correct-answer' : `wrong-answer-${answers.index}` }
+                      disabled={ timedOut }
+                    >
+                      {answers.text}
+                    </button>
+                  ))
                 }
               </div>
             </main>
