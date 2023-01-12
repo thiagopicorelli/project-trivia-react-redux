@@ -1,6 +1,8 @@
 import React, { Component } from 'react';
 import PropTypes from 'prop-types';
+import { connect } from 'react-redux';
 import logo from '../trivia.png';
+import { addEmail } from '../redux/actions';
 
 class Login extends Component {
   state = {
@@ -27,10 +29,12 @@ class Login extends Component {
   };
 
   handleClickPlay = async () => {
-    const { history } = this.props;
+    const { nameInput, emailInput } = this.state;
+    const { history, dispatch } = this.props;
     const response = await fetch('https://opentdb.com/api_token.php?command=request');
     const json = await response.json();
     localStorage.setItem('token', json.token);
+    dispatch(addEmail(emailInput, nameInput));
     history.push('/game');
   };
 
@@ -94,6 +98,7 @@ class Login extends Component {
 
 Login.propTypes = {
   history: PropTypes.shape(PropTypes.any.isRequired).isRequired,
+  dispatch: PropTypes.func.isRequired,
 };
 
-export default Login;
+export default connect()(Login);
