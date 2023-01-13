@@ -2,7 +2,7 @@ import { ADD_EMAIL, ADD_SCORE } from '../actions';
 
 const INITIAL_STATE = {
   name: '',
-  assertions: '',
+  assertions: 0,
   score: 0,
   gravatarEmail: '',
 };
@@ -19,6 +19,7 @@ const player = (state = INITIAL_STATE, action) => {
   case ADD_SCORE: {
     return ({
       ...state,
+      assertions: state.assertions + 1,
       score: action.score,
     });
   }
