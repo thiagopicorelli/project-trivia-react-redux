@@ -52,6 +52,19 @@ class Game extends Component {
     }, questionTimer);
   }
 
+  handleClick = () => {
+    const buttons = document.querySelectorAll('.answersButton');
+    const buttonsArray = [...buttons];
+    buttonsArray.map((button) => {
+      if (button.getAttribute('data-testid') === 'correct-answer') {
+        button.style.border = '3px solid rgb(6, 240, 15)';
+      } else {
+        button.style.border = '3px solid red';
+      }
+      return null;
+    });
+  };
+
   render() {
     const { email, name, score } = this.props;
     const { requestQuestions, currentQuestion, loading, timedOut } = this.state;
@@ -91,6 +104,8 @@ class Game extends Component {
                       data-testid={ questionComponent.answers.length - 1 === answers.index
                         ? 'correct-answer' : `wrong-answer-${answers.index}` }
                       disabled={ timedOut }
+                      onClick={ this.handleClick }
+                      className="answersButton"
                     >
                       {answers.text}
                     </button>
