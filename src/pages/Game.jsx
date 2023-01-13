@@ -57,6 +57,18 @@ class Game extends Component {
   handleClick = ({ target }) => {
     const { dispatch, score } = this.props;
     const { requestQuestions, currentQuestion, timer } = this.state;
+
+    const buttons = document.querySelectorAll('.answersButton');
+    const buttonsArray = [...buttons];
+    buttonsArray.map((button) => {
+      if (button.getAttribute('data-testid') === 'correct-answer') {
+        button.style.border = '3px solid rgb(6, 240, 15)';
+      } else {
+        button.style.border = '3px solid red';
+      }
+      return null;
+    });
+
     if (target.innerText === requestQuestions[currentQuestion].correct_answer) {
       const easy = 1;
       const medium = 2;
@@ -96,31 +108,39 @@ class Game extends Component {
           <p data-testid="header-player-name">{name}</p>
           <p data-testid="header-score">{score}</p>
         </header>
-        {loading ? (
-          <h1>carregando...</h1>
-        ) : (
-          <main>
-            <h4 data-testid="question-category">{questionComponent.category}</h4>
-            <p data-testid="question-text">{questionComponent.question}</p>
-            <div data-testid="answer-options">
-              {questionComponent.answers.map((answers, index) => (
-                <button
-                  key={ index }
-                  type="button"
-                  data-testid={
-                    questionComponent.answers.length - 1 === answers.index
-                      ? 'correct-answer'
-                      : `wrong-answer-${answers.index}`
-                  }
-                  disabled={ timedOut }
-                  onClick={ this.handleClick }
-                >
-                  {answers.text}
-                </button>
-              ))}
-            </div>
-          </main>
-        )}
+        {
+          loading ? <h1>carregando...</h1> : (
+            <main>
+              <h4 data-testid="question-category">
+                {
+                  questionComponent.category
+                }
+              </h4>
+              <p data-testid="question-text">
+                {
+                  questionComponent.question
+                }
+              </p>
+              <div data-testid="answer-options">
+                {
+                  questionComponent.answers.map((answers, index) => (
+                    <button
+                      key={ index }
+                      type="button"
+                      data-testid={ questionComponent.answers.length - 1 === answers.index
+                        ? 'correct-answer' : `wrong-answer-${answers.index}` }
+                      disabled={ timedOut }
+                      onClick={ this.handleClick }
+                      className="answersButton"
+                    >
+                      {answers.text}
+                    </button>
+                  ))
+                }
+              </div>
+            </main>
+          )
+        }
       </div>
     );
   }
