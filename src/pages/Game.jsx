@@ -56,18 +56,17 @@ class Game extends Component {
   }
 
   hendleNextClick = () => {
+    const { history } = this.props;
+    const { currentQuestion } = this.state;
+    const maxQuestions = 4;
+    if (currentQuestion === maxQuestions) {
+      history.push('/feedback');
+    }
     this.setState((state) => ({
       currentQuestion: state.currentQuestion + 1,
       someButtonClicked: false,
       timer: 30,
-    }), () => {
-      const { history } = this.props;
-      const { currentQuestion } = this.state;
-      const maxQuestions = 4;
-      if (currentQuestion === maxQuestions) {
-        history.push('/');
-      }
-    });
+    }));
   };
 
   handleClick = ({ target }) => {
