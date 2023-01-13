@@ -106,6 +106,7 @@ class Game extends Component {
     }
     this.setState({
       someButtonClicked: true,
+      timedOut: true,
     });
   };
 
