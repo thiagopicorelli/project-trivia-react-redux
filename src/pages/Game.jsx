@@ -11,6 +11,7 @@ class Game extends Component {
     loading: true,
     timedOut: false,
     timer: 30,
+    someButtonClicked: false,
   };
 
   async componentDidMount() {
@@ -52,9 +53,31 @@ class Game extends Component {
     }, questionTimer);
   }
 
+  buttonClickChecker = () => {
+    this.setState({
+      someButtonClicked: true,
+    });
+  };
+
+  hendleNextClick = () => {
+    this.setState((state) => ({
+      currentQuestion: state.currentQuestion + 1,
+      someButtonClicked: false,
+      timer: 30,
+    }), () => {
+      const { history } = this.props;
+      const { currentQuestion } = this.state;
+      const maxQuestions = 4;
+      if (currentQuestion === maxQuestions) {
+        history.push('/');
+      }
+    });
+  };
+
   render() {
     const { email, name, score } = this.props;
-    const { requestQuestions, currentQuestion, loading, timedOut } = this.state;
+    const { requestQuestions, currentQuestion, loading, timedOut,
+      someButtonClicked } = this.state;
     const questionComponent = requestQuestions[currentQuestion];
     const hash = MD5(email).toString();
 
@@ -91,12 +114,21 @@ class Game extends Component {
                       data-testid={ questionComponent.answers.length - 1 === answers.index
                         ? 'correct-answer' : `wrong-answer-${answers.index}` }
                       disabled={ timedOut }
+                      onClick={ this.buttonClickChecker }
                     >
                       {answers.text}
                     </button>
                   ))
                 }
               </div>
+              {someButtonClicked && (
+                <button
+                  type="button"
+                  data-testid="btn-next"
+                  onClick={ this.hendleNextClick }
+                >
+                  Next
+                </button>)}
             </main>
           )
         }
