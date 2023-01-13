@@ -1,4 +1,4 @@
-import { ADD_EMAIL } from '../actions';
+import { ADD_EMAIL, ADD_SCORE } from '../actions';
 
 const INITIAL_STATE = {
   name: '',
@@ -14,6 +14,12 @@ const player = (state = INITIAL_STATE, action) => {
       ...state,
       gravatarEmail: action.email,
       name: action.name,
+    });
+  }
+  case ADD_SCORE: {
+    return ({
+      ...state,
+      score: action.score,
     });
   }
   default:
