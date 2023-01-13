@@ -12,6 +12,7 @@ class Game extends Component {
     loading: true,
     timedOut: false,
     timer: 30,
+    someButtonClicked: false,
   };
 
   async componentDidMount() {
@@ -54,6 +55,20 @@ class Game extends Component {
     }, questionTimer);
   }
 
+  hendleNextClick = () => {
+    const { history } = this.props;
+    const { currentQuestion } = this.state;
+    const maxQuestions = 4;
+    if (currentQuestion === maxQuestions) {
+      history.push('/feedback');
+    }
+    this.setState((state) => ({
+      currentQuestion: state.currentQuestion + 1,
+      someButtonClicked: false,
+      timer: 30,
+    }));
+  };
+
   handleClick = ({ target }) => {
     const { dispatch, score } = this.props;
     const { requestQuestions, currentQuestion, timer } = this.state;
@@ -85,15 +100,18 @@ class Game extends Component {
       if (requestQuestions[currentQuestion].difficulty === 'hard') {
         difficultyLevel = hard;
       }
-      console.log(timer);
       const totalScore = score + (baseScore + timer * difficultyLevel);
       dispatch(addScore(totalScore));
     }
+    this.setState({
+      someButtonClicked: true,
+    });
   };
 
   render() {
     const { email, name, score } = this.props;
-    const { requestQuestions, currentQuestion, loading, timedOut } = this.state;
+    const { requestQuestions, currentQuestion, loading, timedOut,
+      someButtonClicked } = this.state;
     const questionComponent = requestQuestions[currentQuestion];
     const hash = MD5(email).toString();
 
@@ -138,6 +156,14 @@ class Game extends Component {
                   ))
                 }
               </div>
+              {someButtonClicked && (
+                <button
+                  type="button"
+                  data-testid="btn-next"
+                  onClick={ this.hendleNextClick }
+                >
+                  Next
+                </button>)}
             </main>
           )
         }
