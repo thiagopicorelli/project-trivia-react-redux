@@ -45,14 +45,14 @@ class Game extends Component {
 
   async setTimer() {
     const s = 1000;
-    const questionTimer = 30000;
     setInterval(() => {
       const { timer } = this.state;
-      this.setState({ timer: timer - 1 });
+      if (timer === 0) {
+        this.setState({ timedOut: true });
+      } else {
+        this.setState({ timer: timer - 1 });
+      }
     }, s);
-    setTimeout(() => {
-      this.setState({ timedOut: true });
-    }, questionTimer);
   }
 
   hendleNextClick = () => {
@@ -65,6 +65,7 @@ class Game extends Component {
     this.setState((state) => ({
       currentQuestion: state.currentQuestion + 1,
       someButtonClicked: false,
+      timedOut: false,
       timer: 30,
     }));
   };
