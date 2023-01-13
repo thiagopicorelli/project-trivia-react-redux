@@ -3,6 +3,7 @@ import { connect } from 'react-redux';
 import { MD5 } from 'crypto-js';
 import PropTypes from 'prop-types';
 import { fetchQuestions } from '../services';
+import { addScore } from '../redux/actions';
 
 class Game extends Component {
   state = {
@@ -22,22 +23,23 @@ class Game extends Component {
       localStorage.removeItem('token');
       history.push('/');
     }
-
     fetchedQuestions.results.forEach((questionComponent) => {
       const answers = [
         ...questionComponent.incorrect_answers,
-        questionComponent.correct_answer];
+        questionComponent.correct_answer,
+      ];
 
-      const answersObject = answers.map((answer, index) => (
-        { text: answer, index }
-      ));
+      const answersObject = answers.map((answer, index) => ({ text: answer, index }));
       questionComponent.answers = answersObject.sort(() => Math.random() - shuffleNumber);
     });
 
-    this.setState({
-      requestQuestions: fetchedQuestions.results,
-      loading: false,
-    }, this.setTimer);
+    this.setState(
+      {
+        requestQuestions: fetchedQuestions.results,
+        loading: false,
+      },
+      this.setTimer,
+    );
   }
 
   async setTimer() {
@@ -52,7 +54,10 @@ class Game extends Component {
     }, questionTimer);
   }
 
-  handleClick = () => {
+  handleClick = ({ target }) => {
+    const { dispatch, score } = this.props;
+    const { requestQuestions, currentQuestion, timer } = this.state;
+
     const buttons = document.querySelectorAll('.answersButton');
     const buttonsArray = [...buttons];
     buttonsArray.map((button) => {
@@ -63,6 +68,27 @@ class Game extends Component {
       }
       return null;
     });
+
+    if (target.innerText === requestQuestions[currentQuestion].correct_answer) {
+      const easy = 1;
+      const medium = 2;
+      const hard = 3;
+      const baseScore = 10;
+
+      let difficultyLevel;
+      if (requestQuestions[currentQuestion].difficulty === 'easy') {
+        difficultyLevel = easy;
+      }
+      if (requestQuestions[currentQuestion].difficulty === 'medium') {
+        difficultyLevel = medium;
+      }
+      if (requestQuestions[currentQuestion].difficulty === 'hard') {
+        difficultyLevel = hard;
+      }
+      console.log(timer);
+      const totalScore = score + (baseScore + timer * difficultyLevel);
+      dispatch(addScore(totalScore));
+    }
   };
 
   render() {
@@ -115,7 +141,6 @@ class Game extends Component {
             </main>
           )
         }
-
       </div>
     );
   }
@@ -132,6 +157,7 @@ Game.propTypes = {
   name: PropTypes.string.isRequired,
   score: PropTypes.number.isRequired,
   history: PropTypes.shape(PropTypes.any.isRequired).isRequired,
+  dispatch: PropTypes.func.isRequired,
 };
 
 export default connect(mapStateToProps)(Game);
