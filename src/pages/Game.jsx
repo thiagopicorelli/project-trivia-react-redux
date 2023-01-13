@@ -1,9 +1,9 @@
 import React, { Component } from 'react';
 import { connect } from 'react-redux';
-import { MD5 } from 'crypto-js';
 import PropTypes from 'prop-types';
 import { fetchQuestions } from '../services';
 import { addScore } from '../redux/actions';
+import Header from '../components/Header';
 
 class Game extends Component {
   state = {
@@ -109,23 +109,13 @@ class Game extends Component {
   };
 
   render() {
-    const { email, name, score } = this.props;
     const { requestQuestions, currentQuestion, loading, timedOut,
       someButtonClicked } = this.state;
     const questionComponent = requestQuestions[currentQuestion];
-    const hash = MD5(email).toString();
 
     return (
       <div>
-        <header>
-          <img
-            src={ `https://www.gravatar.com/avatar/${hash}` }
-            alt="imagem de usuario"
-            data-testid="header-profile-picture"
-          />
-          <p data-testid="header-player-name">{name}</p>
-          <p data-testid="header-score">{score}</p>
-        </header>
+        <Header />
         {
           loading ? <h1>carregando...</h1> : (
             <main>
@@ -179,8 +169,6 @@ const mapStateToProps = (state) => ({
 });
 
 Game.propTypes = {
-  email: PropTypes.string.isRequired,
-  name: PropTypes.string.isRequired,
   score: PropTypes.number.isRequired,
   history: PropTypes.shape(PropTypes.any.isRequired).isRequired,
   dispatch: PropTypes.func.isRequired,

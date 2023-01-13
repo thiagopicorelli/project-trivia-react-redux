@@ -1,12 +1,13 @@
 import React, { Component } from 'react';
 import PropTypes from 'prop-types';
+import Header from '../components/Header';
 
 class Feedback extends Component {
   render() {
     const { history } = this.props;
     return (
       <div>
-        FeedBack
+        <Header />
         <p data-testid="feedback-text">Olá</p>
         <button
           type="button"
