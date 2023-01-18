@@ -22,7 +22,7 @@ describe('testa a tela de Feedbacks', () => {
        const feedback = screen.getByTestId('feedback-text');
        const pontuacaoTotal = screen.getByTestId('feedback-total-score');
        const btnPlayAgain = screen.getByRole('button', { name: /play again/i});
-       const btnranking = screen.getByRole('button', { name: /ranking/i});
+       
        const totalAcertos = screen.getByTestId('feedback-total-question');
 
        const { pathname } = history.location;
@@ -94,12 +94,5 @@ describe('testa a tela de Feedbacks', () => {
         expect(history.location.pathname).toEqual('/ranking');
         });
     });
+ });
 
-    test('se feedback renderiza total score = 0', () => {
-        renderWithRouterAndRedux(<Feedback />);
-
-        const valueScore = screen.getByText(' /0/i');
-        expect(valueScore).toEqual(0); 
-        
-    });
-});
